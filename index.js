@@ -1,5 +1,6 @@
-const { Bot, InlineKeyboard, session } = require("grammy");
+const { Bot, InlineKeyboard, session, webhookCallback } = require("grammy");
 const dotenv = require("dotenv");
+const express = require("express");
 const DATA = require("./data");
 
 dotenv.config();
@@ -177,8 +178,22 @@ bot.catch((err) => {
 
 // Export or Start
 if (require.main === module) {
-    bot.start();
-    console.log("Startupizni Bot is running...");
+    if (process.env.NODE_ENV === "production") {
+        const app = express();
+        app.use(express.json());
+        app.use(webhookCallback(bot, "express"));
+
+        const PORT = process.env.PORT || 10000;
+        app.listen(PORT, async () => {
+            console.log(`Bot listening on port ${PORT}`);
+            const url = `https://${process.env.DOMAIN}/`;
+            await bot.api.setWebhook(url);
+            console.log(`Webhook set to ${url}`);
+        });
+    } else {
+        bot.start();
+        console.log("Startupizni Bot is running in polling mode...");
+    }
 }
 
 module.exports = bot;
