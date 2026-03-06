@@ -1,0 +1,14 @@
+{
+  "name": "startupizni-bot",
+  "version": "1.0.0",
+  "description": "Professional Telegram bot for entrepreneurs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "grammy": "^1.21.0",
+    "dotenv": "^16.4.5"
+  }
+}
